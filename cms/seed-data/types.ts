@@ -19,6 +19,9 @@ export interface Category {
     label: string;
     options: string[];
   }[];
+  /** Generated from a source file (e.g. tiles.generated.ts): scripts/seed.ts
+   *  re-syncs its fields on every run instead of only creating it once. */
+  syncOnSeed?: boolean;
 }
 
 export interface SpecRow {
@@ -41,6 +44,8 @@ export interface Product {
   featured?: boolean;
   isNew?: boolean;
   tone: PlaceholderTone;
+  /** See Category.syncOnSeed. Never touches images or other admin-only fields. */
+  syncOnSeed?: boolean;
 }
 
 export interface Dealer {

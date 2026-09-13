@@ -97,6 +97,34 @@ stays the actual source of truth for what's in production.
 - **Upload images.** `Product.images` / `Category.image` are media relations
   and have to be attached by hand in the admin panel, per record.
 
+### Tiles catalog (spreadsheet-driven)
+
+The `ceramic-tiles` vertical is generated from a spreadsheet instead of being
+hand-written: `cms/seed-data/source/tiles_details.xlsx` (sheets *Tiles
+Details*: Category / Series / Size, and *Category Summary*) becomes
+`cms/seed-data/tiles.generated.ts` — one Category per spreadsheet category, one
+Product per category × series, the sizes as the product's size options, and
+"Series" / "Size" filters on each category.
+
+```bash
+cd cms
+npx tsx scripts/import-tiles.ts   # validate the sheet + regenerate tiles.generated.ts
+npx tsx scripts/seed.ts           # push to Strapi
+```
+
+Commit the spreadsheet and the generated file together. Don't edit
+`tiles.generated.ts` by hand; category taglines/intro copy live in `TILE_COPY`
+in `scripts/import-tiles.ts`. The importer refuses a sheet with malformed
+sizes, duplicate sizes, a category listed with two different series, a
+Category Summary that disagrees with the details, or a filter option that
+would select the wrong products on the category page.
+
+Unlike hand-written records, generated ones are flagged `syncOnSeed`, so
+**re-seeding updates them** — name, collection, copy, sizes, specs and category
+filters — and republishes. Images, `featured`/`isNew` and other admin-owned
+fields are never touched. Removing a category, series or size from the sheet
+still doesn't delete the existing Strapi record (see above).
+
 ## Known content gaps (current catalog snapshot)
 
 - **3 products still need real description/specs**: the source pages for
@@ -111,10 +139,14 @@ stays the actual source of truth for what's in production.
   vertical's `popularProducts` list has been populated, so the homepage
   "Featured Products" section and the mega-menu's "Popular" list are empty
   until an editor curates them in the admin.
-- **`ceramic-tiles` (whole vertical) and part of `kitchen`** have no
-  categories/products yet — those categories were removed rather than left
-  as empty placeholders; re-add them once real tile/kitchen-storage content
-  exists.
+- **Tiles copy is drafted, pending client review.** The 10 tile categories
+  and 17 products come from the client's spreadsheet, but the spreadsheet has
+  no descriptive text: taglines and intro sentences (`TILE_COPY` in
+  `cms/scripts/import-tiles.ts`) were drafted without technical claims and
+  need sign-off. Specs show only spreadsheet facts (series, sizes).
+- **Part of `kitchen`** has no categories/products yet — those categories
+  were removed rather than left as empty placeholders; re-add them once real
+  kitchen-storage content exists.
 
 ## Production build
 

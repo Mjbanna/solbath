@@ -1,4 +1,5 @@
 import { Product } from "./types";
+import { tileProducts } from "./tiles.generated";
 
 export const products: Product[] = [
   // ---------- Towel Racks & Holders ----------
@@ -846,6 +847,9 @@ export const products: Product[] = [
     tags: [],
     tone: "hardware",
   },
+
+  // ---------- Ceramic Tiles (generated from seed-data/source/tiles_details.xlsx) ----------
+  ...tileProducts,
 ];
 
 export function getProductsByCategory(vertical: string, categorySlug: string) {

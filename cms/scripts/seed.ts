@@ -9,7 +9,17 @@ import { catalogs as staticCatalogs } from "../seed-data/catalogs";
 import { site } from "../seed-data/site";
 import { homePage } from "../seed-data/home";
 
+function assertUniqueSlugs(kind: string, items: { slug: string }[]) {
+  const seen = new Set<string>();
+  const dupes = items.map((i) => i.slug).filter((s) => (seen.has(s) ? true : (seen.add(s), false)));
+  if (dupes.length) throw new Error(`Duplicate ${kind} slugs in seed-data: ${[...new Set(dupes)].join(", ")}`);
+}
+
 async function main() {
+  // Upserts match on slug, so a duplicate would silently overwrite its twin.
+  assertUniqueSlugs("category", staticCategories);
+  assertUniqueSlugs("product", staticProducts);
+
   const app = await compileStrapi();
   const strapi = await createStrapi(app).load();
   strapi.log.level = "error";
@@ -62,28 +72,33 @@ async function main() {
     const sortOrder = categorySortOrderByVertical.get(category.vertical) ?? 0;
     categorySortOrderByVertical.set(category.vertical, sortOrder + 1);
 
+    const sourceFields = {
+      vertical: verticalId,
+      name: category.name,
+      tagline: category.tagline,
+      description: category.description,
+      filters: category.filters.map((f) => ({
+        label: f.label,
+        options: f.options.map((value) => ({ value })),
+      })),
+    };
+    // Generated categories (syncOnSeed) re-sync their source fields every run
+    // so spreadsheet edits land; hand-written ones keep their admin edits.
+    // Category has no draft/publish, so the update is live immediately.
     const doc = existing
       ? await strapi
           .documents("api::category.category")
           .update({
             documentId: existing.documentId,
-            data: { sortOrder, isActive: true },
+            data: {
+              ...(category.syncOnSeed ? sourceFields : {}),
+              sortOrder,
+              isActive: true,
+            },
           })
           .then((d) => d ?? existing)
       : await strapi.documents("api::category.category").create({
-          data: {
-            slug: category.slug,
-            vertical: verticalId,
-            name: category.name,
-            tagline: category.tagline,
-            description: category.description,
-            filters: category.filters.map((f) => ({
-              label: f.label,
-              options: f.options.map((value) => ({ value })),
-            })),
-            sortOrder,
-            isActive: true,
-          },
+          data: { slug: category.slug, ...sourceFields, sortOrder, isActive: true },
         });
     categoryIdBySlug.set(category.slug, doc.documentId);
   }
@@ -100,21 +115,45 @@ async function main() {
       filters: { slug: { $eq: product.slug } },
       status: "draft",
     });
-    if (existing) {
-      await strapi.documents("api::product.product").update({
-        documentId: existing.documentId,
-        data: { sortOrder },
-      });
-      productIdBySlug.set(product.slug, existing.documentId);
-      continue;
-    }
-
     const categoryId = categoryIdBySlug.get(product.categorySlug);
     const verticalId = verticalIdByKey.get(product.vertical);
     if (!categoryId || !verticalId) {
       throw new Error(
         `Product "${product.slug}" references unknown category/vertical "${product.categorySlug}"`,
       );
+    }
+
+    if (existing) {
+      if (product.syncOnSeed) {
+        // Generated product: re-sync everything the source file owns, then
+        // publish (Product has draft/publish — an update alone only changes the
+        // draft). images, featured, isNew and popularProducts are admin-owned
+        // and deliberately left alone.
+        await strapi.documents("api::product.product").update({
+          documentId: existing.documentId,
+          data: {
+            vertical: verticalId,
+            category: categoryId,
+            name: product.name,
+            collection: product.collection,
+            shortDescription: product.shortDescription,
+            description: product.description,
+            finishes: product.finishes.map((value) => ({ value })),
+            sizes: (product.sizes ?? []).map((value) => ({ value })),
+            specs: product.specs,
+            tone: product.tone,
+            sortOrder,
+          },
+        });
+        await strapi.documents("api::product.product").publish({ documentId: existing.documentId });
+      } else {
+        await strapi.documents("api::product.product").update({
+          documentId: existing.documentId,
+          data: { sortOrder },
+        });
+      }
+      productIdBySlug.set(product.slug, existing.documentId);
+      continue;
     }
 
     const extraTags = product.tags.filter((t) => !MARKER_TAGS.has(t.toLowerCase()));

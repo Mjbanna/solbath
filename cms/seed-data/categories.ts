@@ -1,4 +1,5 @@
 import { Category } from "./types";
+import { tileCategories } from "./tiles.generated";
 
 export const categories: Category[] = [
   // Bathroom Accessories
@@ -88,6 +89,9 @@ export const categories: Category[] = [
       { label: "Finish", options: ["Chrome", "Brushed Steel", "Matte Black", "Gunmetal"] },
     ],
   },
+
+  // Ceramic Tiles — generated from seed-data/source/tiles_details.xlsx
+  ...tileCategories,
 ];
 
 export const verticalMeta: Record<
