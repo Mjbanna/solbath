@@ -15,7 +15,11 @@ export async function generateMetadata({ params }: PageProps<"/[vertical]/[categ
   const { vertical, category } = await params;
   const cat = await getCategory(vertical as Vertical, category);
   if (!cat) return {};
-  return { title: cat.name, description: cat.tagline };
+  return {
+    title: cat.name,
+    description: cat.tagline,
+    alternates: { canonical: `/${vertical}/${cat.slug}` },
+  };
 }
 
 export default async function CategoryPage({

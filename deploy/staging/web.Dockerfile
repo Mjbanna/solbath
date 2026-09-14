@@ -13,13 +13,24 @@ COPY . .
 # next.config.ts derives images.remotePatterns from it. `next build` prerenders
 # every page from the live CMS, so that CMS must be reachable during the build.
 ARG STRAPI_URL
+# SITE_URL: this deployment's public origin (canonical URLs, sitemap, robots).
+# SITE_INDEXABLE=true ONLY for production — anything else is noindex/Disallow.
+ARG SITE_URL
+ARG SITE_INDEXABLE=false
 RUN test -n "$STRAPI_URL" || (echo "STRAPI_URL build arg is required" && exit 1)
-ENV STRAPI_URL=${STRAPI_URL} NEXT_TELEMETRY_DISABLED=1
+RUN test -n "$SITE_URL" || (echo "SITE_URL build arg is required" && exit 1)
+ENV STRAPI_URL=${STRAPI_URL} SITE_URL=${SITE_URL} SITE_INDEXABLE=${SITE_INDEXABLE} NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 FROM node:${NODE_VERSION}-bookworm-slim AS runtime
 WORKDIR /app
-ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+# SITE_URL / SITE_INDEXABLE are read at RUNTIME too (ISR regeneration, on-demand
+# pages, sitemap) — server-side env is not inlined by `next build`. Bake the
+# same values into the runtime image so a regenerated page can never differ
+# from a prerendered one (e.g. pick up noindex or a localhost canonical).
+ARG SITE_URL
+ARG SITE_INDEXABLE=false
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 SITE_URL=${SITE_URL} SITE_INDEXABLE=${SITE_INDEXABLE}
 COPY --from=builder --chown=node:node /app/package.json /app/package-lock.json ./
 COPY --from=builder --chown=node:node /app/node_modules ./node_modules
 COPY --from=builder --chown=node:node /app/.next ./.next

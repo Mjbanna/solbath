@@ -1,0 +1,128 @@
+# Solbath PRODUCTION — solbath.com (+ www -> apex) and api.solbath.com.
+#
+# Same pattern as deploy/staging (shared VPS behind Coolify's Traefik on the
+# external `coolify` network; certs from its `letsencrypt` resolver), but a
+# fully separate stack: own project, DB, uploads, env files and images.
+#
+# - Images are built OFF the box (deploy/staging/*.Dockerfile, prod build args)
+#   and loaded with `docker load`; only ever `up -d --no-build` (pull_policy:
+#   never enforces it).
+# - Every Traefik router/middleware/service name is prefixed `solbath-prod-`:
+#   staging owns `solbath-*`, and a duplicate router name disables BOTH.
+# - NO noindex middleware here (staging's must never reach production).
+# - The web routers are gated by SOLBATH_PROD_WEB_ROUTING in
+#   /opt/solbath-prod/.env (default false): the site stays unrouted — and no
+#   ACME request is made for solbath.com — until cutover flips it to true and
+#   the web container is recreated.
+name: solbath-prod
+
+services:
+  # ---------------------------------------------------------------- db ------
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file: [/opt/solbath-prod/db.env]
+    volumes:
+      - /opt/solbath-prod/data/db:/var/lib/postgresql/data
+    networks: [internal] # no `ports:` — unreachable from the host and other stacks
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  # --------------------------------------------------------------- cms ------
+  cms:
+    image: solbath-prod-cms:latest
+    pull_policy: never
+    restart: unless-stopped
+    env_file: [/opt/solbath-prod/cms.env]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - /opt/solbath-prod/data/uploads:/app/public/uploads
+    ports:
+      - "127.0.0.1:1341:1337" # host-side health checks only (staging holds 1340)
+    networks: [internal, coolify]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=coolify
+
+      - traefik.http.middlewares.solbath-prod-api-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.solbath-prod-api-https.redirectscheme.permanent=true
+
+      - traefik.http.routers.solbath-prod-api.rule=Host(`api.solbath.com`)
+      - traefik.http.routers.solbath-prod-api.entrypoints=https
+      - traefik.http.routers.solbath-prod-api.tls=true
+      - traefik.http.routers.solbath-prod-api.tls.certresolver=letsencrypt
+      - traefik.http.routers.solbath-prod-api.service=solbath-prod-api
+
+      - traefik.http.routers.solbath-prod-api-http.rule=Host(`api.solbath.com`)
+      - traefik.http.routers.solbath-prod-api-http.entrypoints=http
+      - traefik.http.routers.solbath-prod-api-http.middlewares=solbath-prod-api-https@docker
+      - traefik.http.routers.solbath-prod-api-http.service=solbath-prod-api
+
+      - traefik.http.services.solbath-prod-api.loadbalancer.server.port=1337
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+
+  # --------------------------------------------------------------- web ------
+  web:
+    image: solbath-prod-web:latest
+    pull_policy: never
+    restart: unless-stopped
+    env_file: [/opt/solbath-prod/web.env]
+    depends_on: [cms]
+    ports:
+      - "127.0.0.1:3311:3000" # host-side health checks only (staging holds 3310)
+    networks: [internal, coolify]
+    labels:
+      - traefik.enable=${SOLBATH_PROD_WEB_ROUTING:-false}
+      - traefik.docker.network=coolify
+
+      - traefik.http.middlewares.solbath-prod-web-https.redirectscheme.scheme=https
+      - traefik.http.middlewares.solbath-prod-web-https.redirectscheme.permanent=true
+      # www -> apex, keeping path + query. Traefik v3 answers GET with 301
+      # (HEAD/POST get 308 so the method is preserved). One hop even from
+      # http://www: this runs before the https redirect on the :80 router.
+      - traefik.http.middlewares.solbath-prod-www-to-apex.redirectregex.regex=^https?://www\.solbath\.com/(.*)
+      - traefik.http.middlewares.solbath-prod-www-to-apex.redirectregex.replacement=https://solbath.com/$${1}
+      - traefik.http.middlewares.solbath-prod-www-to-apex.redirectregex.permanent=true
+
+      - traefik.http.routers.solbath-prod-web.rule=Host(`solbath.com`)
+      - traefik.http.routers.solbath-prod-web.entrypoints=https
+      - traefik.http.routers.solbath-prod-web.tls=true
+      - traefik.http.routers.solbath-prod-web.tls.certresolver=letsencrypt
+      - traefik.http.routers.solbath-prod-web.service=solbath-prod-web
+
+      # www only exists to redirect; it still needs its own cert for https://www.
+      - traefik.http.routers.solbath-prod-www.rule=Host(`www.solbath.com`)
+      - traefik.http.routers.solbath-prod-www.entrypoints=https
+      - traefik.http.routers.solbath-prod-www.tls=true
+      - traefik.http.routers.solbath-prod-www.tls.certresolver=letsencrypt
+      - traefik.http.routers.solbath-prod-www.middlewares=solbath-prod-www-to-apex@docker
+      - traefik.http.routers.solbath-prod-www.service=solbath-prod-web
+
+      - traefik.http.routers.solbath-prod-web-http.rule=Host(`solbath.com`) || Host(`www.solbath.com`)
+      - traefik.http.routers.solbath-prod-web-http.entrypoints=http
+      - traefik.http.routers.solbath-prod-web-http.middlewares=solbath-prod-www-to-apex@docker,solbath-prod-web-https@docker
+      - traefik.http.routers.solbath-prod-web-http.service=solbath-prod-web
+
+      - traefik.http.services.solbath-prod-web.loadbalancer.server.port=3000
+    deploy:
+      resources:
+        limits:
+          memory: 768m
+
+networks:
+  internal:
+    driver: bridge
+  coolify:
+    external: true

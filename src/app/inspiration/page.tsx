@@ -7,6 +7,7 @@ import { getPosts } from "@/lib/data/posts";
 
 export const metadata = {
   title: "Inspiration",
+  alternates: { canonical: "/inspiration" },
   description: "Ideas, guides and room stories from the SolBath design desk.",
 };
 

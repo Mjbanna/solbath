@@ -45,6 +45,11 @@ interface WebhookStore {
   updateWebhook(id: string, data: Omit<WebhookRecord, 'id'>): Promise<WebhookRecord | null>;
 }
 
+interface WebhookRunner {
+  add(webhook: WebhookRecord): void;
+  update(webhook: WebhookRecord): void;
+}
+
 async function syncRevalidationWebhook(strapi: Core.Strapi) {
   const frontendUrl = process.env.FRONTEND_URL;
   const secret = process.env.REVALIDATE_SECRET;
@@ -65,8 +70,15 @@ async function syncRevalidationWebhook(strapi: Core.Strapi) {
 
   const desired = { name: REVALIDATE_WEBHOOK_NAME, url, headers, events: REVALIDATE_EVENTS };
 
+  // Strapi loads stored webhooks into its in-memory runner *before* this
+  // bootstrap runs, so a DB write alone only takes effect on the next boot: a
+  // fresh database would get no revalidation until a restart, and a restored
+  // one would keep firing with the old URL/secret. Tell the runner directly.
+  const runner = strapi.get('webhookRunner') as WebhookRunner;
+
   if (!existing) {
-    await webhookStore.createWebhook(desired);
+    const created = await webhookStore.createWebhook(desired);
+    runner.add(created);
     strapi.log.info(`Created "${REVALIDATE_WEBHOOK_NAME}" webhook -> ${url}`);
   } else if (
     existing.url !== url ||
@@ -74,7 +86,8 @@ async function syncRevalidationWebhook(strapi: Core.Strapi) {
     JSON.stringify(existing.events) !== JSON.stringify(REVALIDATE_EVENTS) ||
     !existing.isEnabled
   ) {
-    await webhookStore.updateWebhook(existing.id, { ...desired, isEnabled: true });
+    const updated = await webhookStore.updateWebhook(existing.id, { ...desired, isEnabled: true });
+    if (updated) runner.update(updated);
     strapi.log.info(`Updated "${REVALIDATE_WEBHOOK_NAME}" webhook -> ${url}`);
   }
 }

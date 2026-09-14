@@ -7,6 +7,7 @@ import { getSiteSettings } from "@/lib/data/site";
 
 export const metadata = {
   title: "Contact Us",
+  alternates: { canonical: "/contact" },
   description: "Get in touch with the SolBath team.",
 };
 

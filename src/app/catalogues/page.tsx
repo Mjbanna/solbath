@@ -8,6 +8,7 @@ import { getVerticalMeta } from "@/lib/data/categories";
 
 export const metadata = {
   title: "Download Catalogues",
+  alternates: { canonical: "/catalogues" },
   description: "Download SolBath product catalogues by category.",
 };
 

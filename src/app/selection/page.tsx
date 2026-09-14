@@ -5,6 +5,9 @@ import { getSiteSettings } from "@/lib/data/site";
 
 export const metadata = {
   title: "My Selection",
+  alternates: { canonical: "/selection" },
+  // A visitor's personal shortlist — no search value.
+  robots: { index: false },
   description: "Products you've shortlisted for a quote.",
 };
 

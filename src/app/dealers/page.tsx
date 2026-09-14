@@ -6,6 +6,7 @@ import { getVerticalMeta } from "@/lib/data/categories";
 
 export const metadata = {
   title: "Find a Dealer",
+  alternates: { canonical: "/dealers" },
   description: "Locate a SolBath showroom or dealer partner near you.",
 };
 

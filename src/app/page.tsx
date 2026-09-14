@@ -7,6 +7,8 @@ import { InspirationTeaser } from "@/components/home/InspirationTeaser";
 import { Testimonials } from "@/components/home/Testimonials";
 import { CtaBand } from "@/components/home/CtaBand";
 
+export const metadata = { alternates: { canonical: "/" } };
+
 export default function Home() {
   return (
     <>

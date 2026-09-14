@@ -20,7 +20,11 @@ export async function generateMetadata({ params }: PageProps<"/[vertical]">) {
   const verticalMeta = await getVerticalMeta();
   const meta = verticalMeta[vertical as Vertical];
   if (!meta) return {};
-  return { title: meta.name, description: meta.tagline };
+  return {
+    title: meta.name,
+    description: meta.tagline,
+    alternates: { canonical: `/${meta.slug}` },
+  };
 }
 
 export default async function VerticalPage({ params }: PageProps<"/[vertical]">) {

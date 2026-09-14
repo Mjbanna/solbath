@@ -6,6 +6,7 @@ import { Testimonials } from "@/components/home/Testimonials";
 
 export const metadata = {
   title: "About SolBath",
+  alternates: { canonical: "/about" },
   description: "SolBath's story, quality commitments and milestones.",
 };
 

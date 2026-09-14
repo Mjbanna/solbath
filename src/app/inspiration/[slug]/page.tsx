@@ -17,7 +17,11 @@ export async function generateMetadata({ params }: PageProps<"/inspiration/[slug
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/inspiration/${post.slug}` },
+  };
 }
 
 export default async function InspirationDetailPage({

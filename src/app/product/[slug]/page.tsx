@@ -19,7 +19,11 @@ export async function generateMetadata({ params }: PageProps<"/product/[slug]">)
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return {};
-  return { title: product.name, description: product.shortDescription };
+  return {
+    title: product.name,
+    description: product.shortDescription,
+    alternates: { canonical: `/product/${product.slug}` },
+  };
 }
 
 export default async function ProductPage({ params }: PageProps<"/product/[slug]">) {

@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { BackToTopButton } from "@/components/layout/BackToTopButton";
+import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -20,6 +21,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  // Resolves every page's relative `alternates.canonical` against the apex
+  // origin. Canonicals are set per page, never here: a canonical in the root
+  // layout would be inherited by every route and point them all at "/".
+  metadataBase: new URL(SITE_URL),
+  ...(SITE_INDEXABLE ? {} : { robots: { index: false, follow: false } }),
   title: {
     default: "SolBath - Bathroom Accessories, Ceramic Tiles, Hardware & Kitchen",
     template: "%s | SolBath",

@@ -6,6 +6,7 @@ import { getSiteSettings } from "@/lib/data/site";
 
 export const metadata = {
   title: "Request a Quote",
+  alternates: { canonical: "/quote" },
   description: "Request a quote for one or more SolBath products.",
 };
 

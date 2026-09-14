@@ -6,6 +6,7 @@ import { Placeholder } from "@/components/ui/Placeholder";
 
 export const metadata = {
   title: "For Architects & Dealers",
+  alternates: { canonical: "/for-trade" },
   description: "Trade resources, bulk quoting and project support for architects, designers, dealers and contractors.",
 };
 
