@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
@@ -17,6 +19,7 @@ export default async function InspirationPage() {
   return (
     <div className="py-14 sm:py-20">
       <Container>
+        <JsonLd data={graph([breadcrumbNode([{ name: "Inspiration", path: "/inspiration" }])])} />
         <SectionHeading
           eyebrow="Inspiration"
           title="Ideas for every room"

@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -17,6 +19,7 @@ export default async function ContactPage() {
   return (
     <div className="py-14 sm:py-20">
       <Container>
+        <JsonLd data={graph([breadcrumbNode([{ name: "Contact", path: "/contact" }])])} />
         <SectionHeading eyebrow="Get in Touch" title="We'd love to hear from you" />
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_1.1fr]">

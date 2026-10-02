@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
@@ -41,6 +43,7 @@ export default async function VerticalPage({ params }: PageProps<"/[vertical]">)
 
   return (
     <>
+      <JsonLd data={graph([breadcrumbNode([{ name: meta.name, path: `/${vertical}` }])])} />
       <section className="relative overflow-hidden bg-navy">
         <Placeholder
           tone={meta.tone}

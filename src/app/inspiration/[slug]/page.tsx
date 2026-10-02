@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -44,6 +46,14 @@ export default async function InspirationDetailPage({
   return (
     <div className="py-10 sm:py-14">
       <Container>
+        <JsonLd
+          data={graph([
+            breadcrumbNode([
+              { name: "Inspiration", path: "/inspiration" },
+              { name: post.title, path: `/inspiration/${post.slug}` },
+            ]),
+          ])}
+        />
         <p className="text-xs font-medium text-ink-soft">
           <Link href="/" className="hover:text-accent">
             Home
@@ -85,7 +95,7 @@ export default async function InspirationDetailPage({
             <>
               <p>
                 When planning this look, we started with the fittings and let the surfaces
-                follow — choosing finishes that would age gracefully and pairing them with
+                follow - choosing finishes that would age gracefully and pairing them with
                 tiles or hardware that add warmth without competing for attention.
               </p>
               <p>
@@ -94,7 +104,7 @@ export default async function InspirationDetailPage({
                 least a decade of daily use.
               </p>
               <p>
-                Below are the exact products featured in this story — tap through for full
+                Below are the exact products featured in this story - tap through for full
                 specs, finish options and to add them to your quote list.
               </p>
             </>

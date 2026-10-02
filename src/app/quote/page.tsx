@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { QuoteForm } from "@/components/forms/QuoteForm";
@@ -22,6 +24,7 @@ export default async function QuotePage({ searchParams }: PageProps<"/quote">) {
   return (
     <div className="py-14 sm:py-20">
       <Container>
+        <JsonLd data={graph([breadcrumbNode([{ name: "Request a Quote", path: "/quote" }])])} />
         <SectionHeading
           eyebrow="Request a Quote"
           title="Tell us what you need"

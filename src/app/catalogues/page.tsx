@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { FileText } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -18,10 +20,11 @@ export default async function CataloguesPage() {
   return (
     <div className="py-14 sm:py-20">
       <Container>
+        <JsonLd data={graph([breadcrumbNode([{ name: "Catalogues", path: "/catalogues" }])])} />
         <SectionHeading
           eyebrow="Resources"
           title="Download our catalogues"
-          description="Full product ranges, specs and finishes — organized by category. Catalogue PDFs will be uploaded and kept up to date through the CMS."
+          description="Full product ranges, specs and finishes - organized by category. Catalogue PDFs will be uploaded and kept up to date through the CMS."
         />
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {catalogs.map((cat) => (

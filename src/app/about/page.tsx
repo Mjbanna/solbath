@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Placeholder } from "@/components/ui/Placeholder";
@@ -26,6 +28,7 @@ export default function AboutPage() {
         <Placeholder tone="lifestyle" className="absolute inset-0 h-full w-full" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/20" />
         <Container className="relative flex min-h-[45vh] flex-col justify-end gap-3 py-16">
+        <JsonLd data={graph([breadcrumbNode([{ name: "About SolBath", path: "/about" }])])} />
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent-soft">
             About SolBath
           </p>

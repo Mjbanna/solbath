@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph, productNode } from "@/lib/seo/jsonld";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
@@ -41,6 +43,16 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
 
   return (
     <div>
+      <JsonLd
+        data={graph([
+          breadcrumbNode([
+            { name: meta.name, path: `/${product.vertical}` },
+            ...(category ? [{ name: category.name, path: `/${product.vertical}/${category.slug}` }] : []),
+            { name: product.name, path: `/product/${product.slug}` },
+          ]),
+          productNode(product, category?.name),
+        ])}
+      />
       <div className="py-8 sm:py-12">
         <Container>
           <p className="text-xs font-medium text-ink-soft">

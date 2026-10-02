@@ -7,6 +7,9 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { BackToTopButton } from "@/components/layout/BackToTopButton";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
+import { getSiteSettings } from "@/lib/data/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { graph, localBusinessNode, organizationNode } from "@/lib/seo/jsonld";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -34,13 +37,16 @@ export const metadata: Metadata = {
     "Premium bathroom accessories, ceramic tiles, hardware and kitchen solutions. Browse the catalog, get inspired, and request a quote.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const site = await getSiteSettings();
   return (
     <html
       lang="en"
       className={`${manrope.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-ink">
+        {/* Identity of the business, on every page, in the server response. */}
+        <JsonLd data={graph([organizationNode(site), localBusinessNode(site)])} />
         <SelectionProvider>
           <Header />
           <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">

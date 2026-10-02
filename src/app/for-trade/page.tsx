@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { FileDown, Users2, Percent, Headset } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -27,6 +29,7 @@ export default function ForTradePage() {
         <Placeholder tone="lifestyle" className="absolute inset-0 h-full w-full" />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/20" />
         <Container className="relative flex min-h-[40vh] flex-col justify-end gap-3 py-16">
+        <JsonLd data={graph([breadcrumbNode([{ name: "For Architects & Dealers", path: "/for-trade" }])])} />
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent-soft">
             Trade Resources
           </p>

@@ -1,3 +1,5 @@
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { DealerLocator } from "@/components/dealers/DealerLocator";
@@ -17,6 +19,7 @@ export default async function DealersPage() {
   return (
     <div className="py-14 sm:py-20">
       <Container>
+        <JsonLd data={graph([breadcrumbNode([{ name: "Dealers", path: "/dealers" }])])} />
         <SectionHeading
           eyebrow="Showrooms & Dealers"
           title="Find a SolBath partner near you"
