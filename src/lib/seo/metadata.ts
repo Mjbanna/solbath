@@ -34,10 +34,15 @@ export function pageMetadata({ title, description, path, images, noIndex }: Page
   const url = `${SITE_URL}${path}`;
   const fullTitle = title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE;
   const desc = description ?? DEFAULT_DESCRIPTION;
-  // CMS photos: dimensions are not stored, so width/height are omitted (they
-  // are hints, not requirements); alt is the page's own title.
+  // CMS photos go through /og-image, which returns a predictable 1200x630 JPEG
+  // (the originals are up to ~800 KB PNGs, which WhatsApp refuses to preview).
   const ogImages = images?.length
-    ? images.map((u) => ({ url: u, alt: title ?? SITE_NAME }))
+    ? images.map((u) => ({
+        url: `${SITE_URL}/og-image?src=${encodeURIComponent(u)}`,
+        width: 1200,
+        height: 630,
+        alt: title ?? SITE_NAME,
+      }))
     : [DEFAULT_OG_IMAGE];
 
   return {
