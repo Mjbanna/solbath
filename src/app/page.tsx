@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graph, webSiteNode } from "@/lib/seo/jsonld";
 import { getSiteSettings } from "@/lib/data/site";
@@ -10,7 +11,7 @@ import { InspirationTeaser } from "@/components/home/InspirationTeaser";
 import { Testimonials } from "@/components/home/Testimonials";
 import { CtaBand } from "@/components/home/CtaBand";
 
-export const metadata = { alternates: { canonical: "/" } };
+export const metadata = pageMetadata({ path: "/" });
 
 export default async function Home() {
   const site = await getSiteSettings();

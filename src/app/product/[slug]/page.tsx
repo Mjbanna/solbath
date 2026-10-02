@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph, productNode } from "@/lib/seo/jsonld";
 import Link from "next/link";
@@ -21,11 +22,12 @@ export async function generateMetadata({ params }: PageProps<"/product/[slug]">)
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return {};
-  return {
+  return pageMetadata({
     title: product.name,
     description: product.shortDescription,
-    alternates: { canonical: `/product/${product.slug}` },
-  };
+    path: `/product/${product.slug}`,
+    images: product.images?.length ? product.images.slice(0, 1) : undefined,
+  });
 }
 
 export default async function ProductPage({ params }: PageProps<"/product/[slug]">) {

@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
@@ -6,11 +7,11 @@ import { DealerLocator } from "@/components/dealers/DealerLocator";
 import { getDealers } from "@/lib/data/dealers";
 import { getVerticalMeta } from "@/lib/data/categories";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Find a Dealer",
-  alternates: { canonical: "/dealers" },
   description: "Locate a SolBath showroom or dealer partner near you.",
-};
+  path: "/dealers",
+});
 
 export default async function DealersPage() {
   const [dealers, verticalMeta] = await Promise.all([getDealers(), getVerticalMeta()]);

@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
@@ -19,11 +20,12 @@ export async function generateMetadata({ params }: PageProps<"/inspiration/[slug
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
-  return {
+  return pageMetadata({
     title: post.title,
     description: post.excerpt,
-    alternates: { canonical: `/inspiration/${post.slug}` },
-  };
+    path: `/inspiration/${post.slug}`,
+    images: post.coverImage ? [post.coverImage] : undefined,
+  });
 }
 
 export default async function InspirationDetailPage({

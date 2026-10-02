@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
@@ -22,11 +23,12 @@ export async function generateMetadata({ params }: PageProps<"/[vertical]">) {
   const verticalMeta = await getVerticalMeta();
   const meta = verticalMeta[vertical as Vertical];
   if (!meta) return {};
-  return {
+  return pageMetadata({
     title: meta.name,
     description: meta.tagline,
-    alternates: { canonical: `/${meta.slug}` },
-  };
+    path: `/${meta.slug}`,
+    images: meta.image ? [meta.image.src] : undefined,
+  });
 }
 
 export default async function VerticalPage({ params }: PageProps<"/[vertical]">) {

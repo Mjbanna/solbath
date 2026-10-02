@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
@@ -7,11 +8,11 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { getSiteSettings } from "@/lib/data/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Contact Us",
-  alternates: { canonical: "/contact" },
   description: "Get in touch with the SolBath team.",
-};
+  path: "/contact",
+});
 
 export default async function ContactPage() {
   const site = await getSiteSettings();

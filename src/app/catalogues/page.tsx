@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { FileText } from "lucide-react";
@@ -8,11 +9,11 @@ import { CatalogViewButton } from "@/components/catalogs/CatalogViewButton";
 import { getCatalogs } from "@/lib/data/catalogs";
 import { getVerticalMeta } from "@/lib/data/categories";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Download Catalogues",
-  alternates: { canonical: "/catalogues" },
   description: "Download SolBath product catalogues by category.",
-};
+  path: "/catalogues",
+});
 
 export default async function CataloguesPage() {
   const [catalogs, verticalMeta] = await Promise.all([getCatalogs(), getVerticalMeta()]);

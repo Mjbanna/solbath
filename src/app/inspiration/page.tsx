@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import Link from "next/link";
@@ -7,11 +8,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Placeholder } from "@/components/ui/Placeholder";
 import { getPosts } from "@/lib/data/posts";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Inspiration",
-  alternates: { canonical: "/inspiration" },
   description: "Ideas, guides and room stories from the SolBath design desk.",
-};
+  path: "/inspiration",
+});
 
 export default async function InspirationPage() {
   const posts = await getPosts();

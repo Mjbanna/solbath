@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph, itemListNode } from "@/lib/seo/jsonld";
 import Link from "next/link";
@@ -17,11 +18,12 @@ export async function generateMetadata({ params }: PageProps<"/[vertical]/[categ
   const { vertical, category } = await params;
   const cat = await getCategory(vertical as Vertical, category);
   if (!cat) return {};
-  return {
+  return pageMetadata({
     title: cat.name,
     description: cat.tagline,
-    alternates: { canonical: `/${vertical}/${cat.slug}` },
-  };
+    path: `/${vertical}/${cat.slug}`,
+    images: cat.image ? [cat.image] : undefined,
+  });
 }
 
 export default async function CategoryPage({

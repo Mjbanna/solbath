@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { BackToTopButton } from "@/components/layout/BackToTopButton";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
+import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, DEFAULT_TITLE, SITE_NAME } from "@/lib/seo/metadata";
 import { getSiteSettings } from "@/lib/data/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graph, localBusinessNode, organizationNode } from "@/lib/seo/jsonld";
@@ -33,8 +34,25 @@ export const metadata: Metadata = {
     default: "SolBath - Bathroom Accessories, Ceramic Tiles, Hardware & Kitchen",
     template: "%s | SolBath",
   },
-  description:
-    "Premium bathroom accessories, ceramic tiles, hardware and kitchen solutions. Browse the catalog, get inspired, and request a quote.",
+  description: DEFAULT_DESCRIPTION,
+  // Defaults for anything without its own set (e.g. the 404 page). Pages build
+  // their full tags through pageMetadata() because Next replaces, not merges,
+  // the openGraph object.
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    locale: "en_IN",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: `${SITE_URL}/`,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE.url],
+  },
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

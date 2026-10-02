@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
@@ -6,11 +7,11 @@ import { QuoteForm } from "@/components/forms/QuoteForm";
 import { getProduct } from "@/lib/data/products";
 import { getSiteSettings } from "@/lib/data/site";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "Request a Quote",
-  alternates: { canonical: "/quote" },
   description: "Request a quote for one or more SolBath products.",
-};
+  path: "/quote",
+});
 
 export default async function QuotePage({ searchParams }: PageProps<"/quote">) {
   const params = await searchParams;

@@ -1,8 +1,12 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 
-export const metadata = { title: "Terms of Use", alternates: { canonical: "/terms" } };
+export const metadata = pageMetadata({
+  title: "Terms of Use",
+  path: "/terms",
+});
 
 export default function TermsPage() {
   return (

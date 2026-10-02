@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
@@ -6,11 +7,11 @@ import { Placeholder } from "@/components/ui/Placeholder";
 import { TrustStrip } from "@/components/home/TrustStrip";
 import { Testimonials } from "@/components/home/Testimonials";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "About SolBath",
-  alternates: { canonical: "/about" },
   description: "SolBath's story, quality commitments and milestones.",
-};
+  path: "/about",
+});
 
 const milestones = [
   { year: "2010", label: "SolBath founded as a regional sanitaryware distributor" },

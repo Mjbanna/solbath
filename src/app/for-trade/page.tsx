@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbNode, graph } from "@/lib/seo/jsonld";
 import { FileDown, Users2, Percent, Headset } from "lucide-react";
@@ -6,11 +7,11 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Placeholder } from "@/components/ui/Placeholder";
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: "For Architects & Dealers",
-  alternates: { canonical: "/for-trade" },
   description: "Trade resources, bulk quoting and project support for architects, designers, dealers and contractors.",
-};
+  path: "/for-trade",
+});
 
 const architectPerks = [
   { icon: FileDown, title: "Technical Data Sheets", detail: "Downloadable specs, CAD blocks and installation guides for every product." },
