@@ -14,7 +14,7 @@ COPY . .
 # every page from the live CMS, so that CMS must be reachable during the build.
 ARG STRAPI_URL
 # SITE_URL: this deployment's public origin (canonical URLs, sitemap, robots).
-# SITE_INDEXABLE=true ONLY for production — anything else is noindex/Disallow.
+# SITE_INDEXABLE=true ONLY for production - anything else is noindex/Disallow.
 ARG SITE_URL
 ARG SITE_INDEXABLE=false
 RUN test -n "$STRAPI_URL" || (echo "STRAPI_URL build arg is required" && exit 1)
@@ -25,7 +25,7 @@ RUN npm run build
 FROM node:${NODE_VERSION}-bookworm-slim AS runtime
 WORKDIR /app
 # SITE_URL / SITE_INDEXABLE are read at RUNTIME too (ISR regeneration, on-demand
-# pages, sitemap) — server-side env is not inlined by `next build`. Bake the
+# pages, sitemap) - server-side env is not inlined by `next build`. Bake the
 # same values into the runtime image so a regenerated page can never differ
 # from a prerendered one (e.g. pick up noindex or a localhost canonical).
 ARG SITE_URL

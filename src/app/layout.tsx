@@ -11,6 +11,7 @@ import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, DEFAULT_TITLE, SITE_NAME } from 
 import { getSiteSettings } from "@/lib/data/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graph, localBusinessNode, organizationNode } from "@/lib/seo/jsonld";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -74,6 +75,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <BackToTopButton />
           <WhatsAppButton />
         </SelectionProvider>
+        <GoogleAnalytics />
       </body>
     </html>
   );
