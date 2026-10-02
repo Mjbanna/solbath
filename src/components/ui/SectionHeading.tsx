@@ -1,6 +1,8 @@
 import clsx from "clsx";
 
 interface SectionHeadingProps {
+  /** h1 when this heading is the page title, h2 for a section (default). */
+  as?: "h1" | "h2";
   eyebrow?: string;
   title: string;
   description?: string;
@@ -10,6 +12,7 @@ interface SectionHeadingProps {
 }
 
 export function SectionHeading({
+  as: Heading = "h2",
   eyebrow,
   title,
   description,
@@ -35,14 +38,14 @@ export function SectionHeading({
           {eyebrow}
         </p>
       ) : null}
-      <h2
+      <Heading
         className={clsx(
           "font-heading text-3xl leading-tight text-balance sm:text-4xl",
           tone === "light" ? "text-ink" : "text-white",
         )}
       >
         {title}
-      </h2>
+      </Heading>
       {description ? (
         <p
           className={clsx(

@@ -11,6 +11,9 @@ export async function CategoryShowcase() {
   return (
     <section className="py-20 sm:py-28">
       <Container>
+        {/* The cards below are h3; this keeps the document outline intact
+            without changing the design. */}
+        <h2 className="sr-only">Product ranges</h2>
         <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
           {items.map((item) => (
             <Link

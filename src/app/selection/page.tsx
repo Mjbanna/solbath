@@ -18,7 +18,7 @@ export default async function SelectionPage() {
   return (
     <div className="py-14 sm:py-20">
       <Container>
-        <SectionHeading
+        <SectionHeading as="h1"
           eyebrow="My Selection"
           title="Your shortlisted products"
           description="Review your selection, then submit it as a single quote request or share it with our team on WhatsApp."

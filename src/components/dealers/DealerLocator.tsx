@@ -42,6 +42,8 @@ export function DealerLocator({
         </span>
       </div>
 
+      <h2 className="sr-only">Dealers and showrooms</h2>
+
       <div className="mt-8 grid gap-6">
         {filtered.map((dealer) => (
           <div

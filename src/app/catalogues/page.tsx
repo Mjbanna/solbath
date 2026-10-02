@@ -22,7 +22,7 @@ export default async function CataloguesPage() {
     <div className="py-14 sm:py-20">
       <Container>
         <JsonLd data={graph([breadcrumbNode([{ name: "Catalogues", path: "/catalogues" }])])} />
-        <SectionHeading
+        <SectionHeading as="h1"
           eyebrow="Resources"
           title="Download our catalogues"
           description="Full product ranges, specs and finishes - organized by category. Catalogue PDFs will be uploaded and kept up to date through the CMS."

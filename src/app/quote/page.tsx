@@ -26,7 +26,7 @@ export default async function QuotePage({ searchParams }: PageProps<"/quote">) {
     <div className="py-14 sm:py-20">
       <Container>
         <JsonLd data={graph([breadcrumbNode([{ name: "Request a Quote", path: "/quote" }])])} />
-        <SectionHeading
+        <SectionHeading as="h1"
           eyebrow="Request a Quote"
           title="Tell us what you need"
           description="Whether it's a single product or a full project list, share your requirements and our team will follow up with pricing and availability."

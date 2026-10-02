@@ -21,11 +21,12 @@ export default async function InspirationPage() {
     <div className="py-14 sm:py-20">
       <Container>
         <JsonLd data={graph([breadcrumbNode([{ name: "Inspiration", path: "/inspiration" }])])} />
-        <SectionHeading
+        <SectionHeading as="h1"
           eyebrow="Inspiration"
           title="Ideas for every room"
           description="Design stories, buying guides and room-by-room inspiration to help you plan with confidence."
         />
+        <h2 className="sr-only">Latest stories</h2>
         <div className="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <Link key={post.slug} href={`/inspiration/${post.slug}`} className="group flex flex-col">

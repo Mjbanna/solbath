@@ -21,7 +21,7 @@ export default async function ContactPage() {
     <div className="py-14 sm:py-20">
       <Container>
         <JsonLd data={graph([breadcrumbNode([{ name: "Contact", path: "/contact" }])])} />
-        <SectionHeading eyebrow="Get in Touch" title="We'd love to hear from you" />
+        <SectionHeading as="h1" eyebrow="Get in Touch" title="We'd love to hear from you" />
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_1.1fr]">
           <div className="space-y-8">

@@ -95,7 +95,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
           <div className="mt-16 max-w-3xl">
             <h2 className="font-heading text-2xl text-ink">Specifications</h2>
             <div className="mt-5">
-              <SpecTable specs={product.specs} />
+              <SpecTable specs={product.specs} caption={`Specifications for ${product.name}`} />
             </div>
           </div>
         </Container>

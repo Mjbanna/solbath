@@ -32,7 +32,7 @@ export function CategoryProductBrowser({
   const activeCount = Object.values(selected).reduce((sum, set) => sum + set.size, 0);
 
   // A filter option (or whole group) only renders if at least one product in
-  // this category actually matches it — otherwise editors would see dead
+  // this category actually matches it - otherwise editors would see dead
   // checkboxes for values (e.g. "Bidet") nothing in the catalog has yet.
   const visibleFilterGroups = useMemo(() => {
     return category.filters
@@ -91,6 +91,8 @@ export function CategoryProductBrowser({
       {hasFilters ? (
         <aside className={`${mobileFiltersOpen ? "block" : "hidden"} lg:block`}>
           <div className="sticky top-24 space-y-8">
+            {/* Keeps the outline intact: the cards below are h3. */}
+            <h2 className="sr-only">Products</h2>
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-soft">
                 Filter By

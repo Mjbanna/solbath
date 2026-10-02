@@ -21,7 +21,7 @@ export default async function DealersPage() {
     <div className="py-14 sm:py-20">
       <Container>
         <JsonLd data={graph([breadcrumbNode([{ name: "Dealers", path: "/dealers" }])])} />
-        <SectionHeading
+        <SectionHeading as="h1"
           eyebrow="Showrooms & Dealers"
           title="Find a SolBath partner near you"
           description="See finishes and full room setups in person, or speak to a dealer partner for bulk and project quotes."
