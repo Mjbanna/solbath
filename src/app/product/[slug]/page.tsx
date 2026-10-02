@@ -1,6 +1,8 @@
 import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { breadcrumbNode, graph, productNode } from "@/lib/seo/jsonld";
+import { breadcrumbNode, faqNode, graph, productNode } from "@/lib/seo/jsonld";
+import { productFaqs, productLead } from "@/lib/seo/aeo";
+import { FaqSection } from "@/components/content/FaqSection";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
@@ -42,6 +44,8 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
     getSiteSettings(),
   ]);
   const meta = verticalMeta[product.vertical];
+  const faqs = productFaqs(product, site);
+  const lead = productLead(product, category?.name);
 
   return (
     <div>
@@ -53,6 +57,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
             { name: product.name, path: `/product/${product.slug}` },
           ]),
           productNode(product, category?.name),
+          ...(faqs.length ? [faqNode(faqs)] : []),
         ])}
       />
       <div className="py-8 sm:py-12">
@@ -84,6 +89,8 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
                 {product.collection}
               </p>
               <h1 className="mt-2 font-heading text-3xl text-ink sm:text-4xl">{product.name}</h1>
+              {/* Answer-first: the factual summary precedes the description. */}
+              {lead ? <p className="mt-4 text-base font-medium leading-relaxed text-ink">{lead}</p> : null}
               <p className="mt-4 text-base leading-relaxed text-ink-soft">{product.description}</p>
 
               <div className="mt-8 border-t border-border pt-8">
@@ -98,6 +105,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
               <SpecTable specs={product.specs} caption={`Specifications for ${product.name}`} />
             </div>
           </div>
+          <FaqSection faqs={faqs} />
         </Container>
       </div>
 

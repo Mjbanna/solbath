@@ -1,6 +1,9 @@
 import { pageMetadata } from "@/lib/seo/metadata";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { breadcrumbNode, graph, itemListNode } from "@/lib/seo/jsonld";
+import { breadcrumbNode, faqNode, graph, itemListNode } from "@/lib/seo/jsonld";
+import { categoryFaqs, categoryLead } from "@/lib/seo/aeo";
+import { FaqSection } from "@/components/content/FaqSection";
+import { getSiteSettings } from "@/lib/data/site";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Container } from "@/components/ui/Container";
@@ -37,7 +40,12 @@ export default async function CategoryPage({
   const meta = verticalMeta[vertical as Vertical];
   if (!meta || !cat) notFound();
 
-  const products = await getProductsByCategory(vertical as Vertical, category);
+  const [products, site] = await Promise.all([
+    getProductsByCategory(vertical as Vertical, category),
+    getSiteSettings(),
+  ]);
+  const faqs = categoryFaqs(cat, products, site);
+  const lead = categoryLead(cat, products);
 
   return (
     <div className="py-10 sm:py-14">
@@ -49,6 +57,7 @@ export default async function CategoryPage({
               { name: cat.name, path: `/${vertical}/${cat.slug}` },
             ]),
             itemListNode(products, cat.name),
+            ...(faqs.length ? [faqNode(faqs)] : []),
           ])}
         />
         <p className="text-xs font-medium text-ink-soft">
@@ -64,12 +73,16 @@ export default async function CategoryPage({
 
         <div className="mt-4 max-w-2xl">
           <h1 className="font-heading text-3xl text-ink sm:text-4xl">{cat.name}</h1>
+          {/* Answer-first: the factual summary precedes the marketing copy. */}
+          {lead ? <p className="mt-3 text-base font-medium leading-relaxed text-ink">{lead}</p> : null}
           <p className="mt-3 text-base leading-relaxed text-ink-soft">{cat.description}</p>
         </div>
 
         <div className="mt-10">
           <CategoryProductBrowser category={cat} products={products} />
         </div>
+
+        <FaqSection faqs={faqs} />
       </Container>
     </div>
   );
